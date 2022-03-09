@@ -90,14 +90,93 @@ function initBotConversation() {
         token: tokenPayload.connectorToken,
         domain: domain
     });
+
+
+    const styleSet = window.WebChat.createStyleSet({
+        paddingRegular: 16,
+        // paddingWide: '16px 24px',
+        bubbleBackground: '#f3efe6',
+        bubbleBorderColor: 'transparent',
+        bubbleBorderRadius: '24px 24px 24px 8px',
+        bubbleBorderStyle: 'solid',
+        bubbleBorderWidth: 1,
+        bubbleFromUserBackground: '#57C5BF',
+        bubbleFromUserBorderColor: 'transparent',
+        bubbleFromUserBorderRadius: '24px 24px 8px 24px',
+        bubbleFromUserBorderStyle: 'solid',
+        bubbleFromUserBorderWidth: 0,
+        bubbleFromUserNubOffset: 0,
+        bubbleFromUserNubSize: undefined,
+        bubbleFromUserTextColor: 'white',
+        bubbleImageHeight: 240,
+        bubbleMaxWidth: 480, // Based off screen width = 600px
+        bubbleMinHeight: 0,
+        bubbleMinWidth: 250, // min screen width = 300px; Microsoft Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
+        bubbleNubOffset: 0,
+        bubbleNubSize: undefined,
+        bubbleTextColor: '#272625',
+        messageActivityWordBreak: 'break-word',
+
+
+        // Suggested actions
+        suggestedActionBackground: 'transparent',
+        suggestedActionBorderColor: '#57C6BE',
+        suggestedActionBorderRadius: 24,
+        suggestedActionBorderStyle: 'solid',
+        suggestedActionBorderWidth: 3,
+        suggestedActionDisabledBackground: undefined,
+        suggestedActionDisabledBorderColor: '#E6E6E6',
+        suggestedActionDisabledBorderStyle: 'solid',
+        suggestedActionDisabledBorderWidth: 2,
+        suggestedActionDisabledTextColor: undefined,
+        suggestedActionHeight: 55,
+        suggestedActionImageHeight: 20,
+        suggestedActionLayout: 'carousel',
+        suggestedActionTextColor: '#57C6BE',
+
+        transcriptActivityVisualKeyboardIndicatorColor: 'transparent',
+        transcriptVisualKeyboardIndicatorWidth: 0,
+
+        // Send box
+        hideSendBox: false,
+        hideUploadButton: false,
+        microphoneButtonColorOnDictate: '#F33',
+        sendBoxBackground: 'white',
+        sendBoxButtonColor: '#57C6BE',
+        sendBoxButtonColorOnDisabled: '#CCC',
+        sendBoxButtonColorOnFocus: '#57C6BE',
+        sendBoxButtonColorOnHover: '#57C6BE',
+        sendBoxDisabledTextColor: undefined,
+        sendBoxHeight: 80,
+        sendBoxMaxHeight: 200,
+        sendBoxTextColor: 'Black',
+        sendBoxButtonShadeBorderRadius: '50%',
+        sendBoxButtonShadeColor: undefined,
+        sendBoxButtonShadeColorOnActive: "#EDEBE9",
+        sendBoxButtonShadeColorOnDisabled: "#F3F2F1",
+        sendBoxButtonShadeColorOnFocus: undefined,
+        sendBoxButtonShadeColorOnHover: "#F3F2F1",
+        sendBoxButtonShadeInset: 10,
+    });
+
+    styleSet.sendBox = Object.assign({}, styleSet.sendBox, {
+        boxShadow: '0 0px 24px 0 rgb(85 80 67 / 10%)'
+    })
+
+    styleSet.textContent = Object.assign({}, styleSet.textContent, {
+
+    });
+
     const styleOptions = {
-        botAvatarImage: 'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
+        botAvatarImage: ' ',
         // botAvatarInitials: '',
         // userAvatarImage: '',
         hideSendBox: false, /* set to true to hide the send box from the view */
         botAvatarInitials: 'Bot',
         userAvatarInitials: 'You',
-        backgroundColor: '#F8F8F8'
+        backgroundColor: '#F8F8F8',
+        bubbleBackground: '#f3efe6',
+        bubbleFromUserBackground: '#57C5BF'
     };
 
     const store = window.WebChat.createStore({}, function(store) { return function(next) { return function(action) {
@@ -130,6 +209,16 @@ function initBotConversation() {
                 }
             });
 
+            debugger
+            store.dispatch({
+                type: 'WEB_CHAT/SEND_MESSAGE',
+                payload: {
+                    channelData: undefined,
+                    method: "keyboard",
+                    text: "Hi"
+                }
+            });
+
         }
         else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
             if (action.payload && action.payload.activity && action.payload.activity.type === "event" && action.payload.activity.name === "ShareLocationEvent") {
@@ -146,16 +235,17 @@ function initBotConversation() {
     }}});
     const webchatOptions = {
         directLine: botConnection,
-        styleOptions: styleOptions,
         store: store,
         userID: user.id,
         username: user.name,
-        locale: user.locale
+        locale: user.locale,
+        styleSet: styleSet
     };
     startChat(user, webchatOptions);
 }
 
 function startChat(user, webchatOptions) {
     const botContainer = document.getElementById('webchat');
-    window.WebChat.renderWebChat(webchatOptions, botContainer);
+    const webChat = window.WebChat.renderWebChat(webchatOptions, botContainer);
+    debugger;
 }
