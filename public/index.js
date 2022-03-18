@@ -209,7 +209,6 @@ function initBotConversation() {
                 }
             });
 
-            debugger
             store.dispatch({
                 type: 'WEB_CHAT/SEND_MESSAGE',
                 payload: {
@@ -219,8 +218,14 @@ function initBotConversation() {
                 }
             });
 
-        }
-        else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+        } else if (action.type === 'WEB_CHAT/SEND_MESSAGE'){
+            if(action.payload.text !== 'Hi'){
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                    event: 'messageSent'
+                });
+            }
+        } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
             if (action.payload && action.payload.activity && action.payload.activity.type === "event" && action.payload.activity.name === "ShareLocationEvent") {
                 // share
                 getUserLocation(function (location) {
